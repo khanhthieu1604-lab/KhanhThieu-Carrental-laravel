@@ -6,17 +6,24 @@ use Illuminate\Foundation\Configuration\Middleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__.'/../routes/web.php',
-        commands: __DIR__.'/../routes/console.php',
+        web: __DIR__ . '/../routes/web.php',
+        commands: __DIR__ . '/../routes/console.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        
+        $middleware->web(append: [
+            \App\Http\Middleware\Localization::class,
+        ]);
+
         $middleware->alias([
-            'admin'       => \App\Http\Middleware\AdminMiddleware::class,
-            'CheckMaster' => \App\Http\Middleware\CheckMaster::class,
+            'role' => \App\Http\Middleware\EnsureUserHasRole::class,
+        ]);
+
+        // Throttle groups for rate limiting
+        $middleware->alias([
+            'throttle.booking' => \Illuminate\Routing\Middleware\ThrottleRequests::class . ':10,1',
+            'throttle.payment' => \Illuminate\Routing\Middleware\ThrottleRequests::class . ':5,1',
+            'throttle.review' => \Illuminate\Routing\Middleware\ThrottleRequests::class . ':3,1',
         ]);
     })
-    ->withExceptions(function (Exceptions $exceptions) {
-        
-    })->create();
+    ->withExceptions(function (Exceptions $exceptions) {})->create();

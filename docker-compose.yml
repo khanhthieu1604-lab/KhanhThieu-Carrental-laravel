@@ -5,38 +5,66 @@ services:
     build:
       context: .
       dockerfile: docker/php/Dockerfile
-    container_name: laravel_app
+    container_name: thiuu_app
     restart: unless-stopped
     working_dir: /var/www
-    volumes:
-      - ./storage:/var/www/storage
-      - ./database:/var/www/database
-      - .env:/var/www/.env
+    env_file:
+      - .env.docker
     networks:
-      - laravel
-    environment:
-      - "App_ENV=local"
+      - thiuu
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "pidof php-fpm || exit 1" ]
+      interval: 45s
+      timeout: 5s
+      retries: 3
+      start_period: 90s
+
+  queue:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: thiuu_queue
+    restart: unless-stopped
+    working_dir: /var/www
+    command: php artisan queue:work redis --sleep=3 --tries=3 --max-time=3600
+    env_file:
+      - .env.docker
+    networks:
+      - thiuu
+    depends_on:
+      app:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
   nginx:
     build:
       context: .
       dockerfile: docker/nginx/Dockerfile
-    container_name: laravel_nginx
+    container_name: thiuu_nginx
     restart: unless-stopped
     ports:
       - "8080:80"
-    volumes:
-      - ./storage/app/public:/var/www/public/storage
     networks:
-      - laravel
+      - thiuu
     depends_on:
-      - app
+      app:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost/ || exit 1" ]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
 
   mysql:
-    image: mysql:8.0  
-    container_name: laravel_mysql
+    image: mysql:8.0
+    container_name: thiuu_mysql
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: laravel
@@ -48,12 +76,65 @@ services:
     volumes:
       - dbdata:/var/lib/mysql
     networks:
-      - laravel
+      - thiuu
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppassword" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  redis:
+    image: redis:7-alpine
+    container_name: thiuu_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    networks:
+      - thiuu
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: thiuu_phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: password
+      UPLOAD_LIMIT: 100M
+    ports:
+      - "8089:80"
+    networks:
+      - thiuu
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: thiuu_mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025" # SMTP server
+      - "8025:8025" # Web UI
+    networks:
+      - thiuu
 
 networks:
-  laravel:
+  thiuu:
     driver: bridge
 
 volumes:
   dbdata:
+    driver: local
+  redisdata:
     driver: local

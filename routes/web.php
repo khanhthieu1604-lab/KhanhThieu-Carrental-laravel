@@ -5,8 +5,13 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\VNPayController;
+use App\Http\Controllers\Api\AvailabilityController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\AIChatController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\Admin\MaintenanceController; 
+use App\Http\Controllers\Admin\MaintenanceController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 
@@ -14,7 +19,19 @@ Route::get('/', function () {
     return view('splash');
 })->name('splash');
 
+Route::get('lang/{locale}', [App\Http\Controllers\LanguageController::class, 'switch'])->name('lang.switch');
+
 Route::get('/home', [VehicleController::class, 'home'])->name('home');
+
+// Search Routes
+Route::get('/search', [SearchController::class, 'search'])->name('search');
+Route::get('/api/search/autocomplete', [SearchController::class, 'autocomplete'])->name('api.search.autocomplete');
+Route::get('/api/search/filters', [SearchController::class, 'filters'])->name('api.search.filters');
+
+// AI Chat Routes
+Route::post('/api/ai/chat', [AIChatController::class, 'chat'])->name('ai.chat');
+Route::post('/api/ai/recommend', [AIChatController::class, 'recommend'])->name('ai.recommend');
+Route::post('/api/ai/clear-history', [AIChatController::class, 'clearHistory'])->name('ai.clear');
 
 Route::controller(VehicleController::class)->prefix('vehicles')->name('vehicles.')->group(function () {
     Route::get('/', 'index')->name('index');
@@ -32,7 +49,7 @@ Route::prefix('pages')->name('pages.')->group(function () {
     Route::view('/faq', 'pages.faq')->name('faq');
     Route::view('/payment-methods', 'pages.payment-methods')->name('payment');
     Route::view('/partnership', 'pages.partnership')->name('partnership');
-    Route::view('/terms', 'pages.terms')->name('terms'); 
+    Route::view('/terms', 'pages.terms')->name('terms');
 });
 
 // Authenticated Routes
@@ -51,21 +68,50 @@ Route::middleware(['auth'])->group(function () {
 
     Route::controller(BookingController::class)->prefix('bookings')->name('bookings.')->group(function () {
         Route::get('/create/{vehicle_id}', 'create')->name('create');
-        Route::post('/store', 'store')->name('store');
+        Route::post('/store', 'store')->name('store')->middleware('throttle.booking');
         Route::get('/history', 'history')->name('history');
         Route::get('/contract/{id}', 'showContract')->name('contract');
         Route::get('/{id}', 'show')->name('show');
     });
 
     Route::get('/payment/create/{booking}', [PaymentController::class, 'create'])->name('payment.create');
-    Route::post('/payment/{booking}/confirm', [PaymentController::class, 'confirm'])->name('payment.confirm');
-    Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+    Route::post('/payment/{booking}/confirm', [PaymentController::class, 'confirm'])
+        ->name('payment.confirm')
+        ->middleware('throttle.payment');
+
+    Route::post('/reviews', [ReviewController::class, 'store'])
+        ->name('reviews.store')
+        ->middleware('throttle.review');
+
+    // Notification Routes
+    Route::prefix('notifications')->name('notifications.')->group(function () {
+        Route::get('/', [NotificationController::class, 'index'])->name('index');
+        Route::post('/{id}/read', [NotificationController::class, 'markAsRead'])->name('read');
+        Route::post('/read-all', [NotificationController::class, 'markAllAsRead'])->name('read-all');
+        Route::delete('/{id}', [NotificationController::class, 'destroy'])->name('destroy');
+    });
+
+    // VNPay Payment Routes
+    Route::get('/payment/vnpay/return', [VNPayController::class, 'return'])->name('vnpay.return');
+    Route::post('/payment/vnpay/ipn', [VNPayController::class, 'ipn'])->name('vnpay.ipn');
+
+    // API Routes - Availability Calendar
+    Route::prefix('api/vehicles/{vehicle}')->group(function () {
+        Route::get('/availability/booked-dates', [AvailabilityController::class, 'bookedDates'])->name('api.vehicles.booked-dates');
+        Route::post('/availability/check', [AvailabilityController::class, 'check'])->name('api.vehicles.check-availability');
+    });
 
     // Admin Routes
-    Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::middleware(['role:admin,master'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
         Route::get('/dashboard/stats', [AdminController::class, 'stats'])->name('dashboard.stats');
         Route::post('/about/update', [AdminController::class, 'updateAbout'])->name('about.update');
+
+        // Export & Analytics
+        Route::get('/export/excel', [AdminController::class, 'exportExcel'])->name('export.excel');
+        Route::get('/export/pdf', [AdminController::class, 'exportPdf'])->name('export.pdf');
+        Route::get('/analytics', [AdminController::class, 'analytics'])->name('analytics');
+        Route::get('/search/bookings', [AdminController::class, 'searchBookings'])->name('search.bookings');
 
         Route::prefix('bookings')->name('bookings.')->group(function () {
             Route::get('/', [BookingController::class, 'history'])->name('index');
@@ -101,7 +147,7 @@ if (app()->isLocal()) {
         Artisan::call('route:clear');
         try {
             Artisan::call('migrate:fresh --seed --force');
-            Artisan::call('storage:link'); 
+            Artisan::call('storage:link');
             return "<div style='font-family:sans-serif; text-align:center; padding:50px;'>
                         <h2 style='color:#10b981'>✅ HỆ THỐNG ĐÃ ĐƯỢC LÀM SẠCH!</h2>
                         <p>Database đã được reset và nạp dữ liệu mẫu siêu xe.</p>
@@ -114,4 +160,4 @@ if (app()->isLocal()) {
     });
 }
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

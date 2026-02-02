@@ -5,7 +5,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <div x-data="adminDashboard()" x-init="init()" class="bg-white dark:bg-[#050505] min-h-screen py-12 font-sans transition-colors duration-500 relative overflow-hidden">
-    
+
     {{-- Background Glows --}}
     <div class="absolute top-0 left-0 w-[500px] h-[500px] bg-yellow-500/5 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
     <div class="absolute bottom-0 right-0 w-[500px] h-[500px] bg-zinc-500/5 rounded-full blur-[120px] translate-x-1/2 translate-y-1/2 pointer-events-none"></div>
@@ -24,10 +24,10 @@
                     Hệ thống đang hoạt động. Chào bro, <span class="text-zinc-900 dark:text-zinc-100 font-black">{{ Auth::user()->name }}</span>.
                 </p>
             </div>
-            
+
             <div class="flex items-center gap-4">
                 <a href="{{ route('home') }}" class="group px-6 py-3 bg-zinc-50 dark:bg-white/5 border border-zinc-200 dark:border-white/5 rounded-full text-[10px] font-black uppercase tracking-widest text-zinc-600 dark:text-zinc-400 hover:bg-zinc-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-all duration-500 flex items-center gap-3">
-                    <i class="fa-solid fa-eye text-sm"></i> 
+                    <i class="fa-solid fa-eye text-sm"></i>
                     <span>Live View</span>
                 </a>
                 <button @click="fetchStats(true)" class="w-12 h-12 flex items-center justify-center bg-zinc-900 dark:bg-white text-white dark:text-black rounded-full shadow-2xl hover:scale-110 transition-transform duration-500 relative overflow-hidden">
@@ -42,11 +42,11 @@
                 <div class="absolute inset-0 opacity-30" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/e/ec/World_map_blank_without_borders.svg'); background-size: cover; background-position: center; filter: invert(1);"></div>
                 <div class="absolute inset-0 bg-gradient-to-t from-[#050505] to-transparent"></div>
             </div>
-            
+
             <div class="absolute top-6 left-8">
-                 <span class="flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/20 text-red-500 border border-red-500/30 text-[9px] font-black uppercase tracking-widest animate-pulse">
+                <span class="flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/20 text-red-500 border border-red-500/30 text-[9px] font-black uppercase tracking-widest animate-pulse">
                     <span class="w-2 h-2 rounded-full bg-red-500"></span> Live Tracking
-                 </span>
+                </span>
             </div>
 
             <div class="absolute top-1/2 left-1/3 w-3 h-3 bg-amber-500 rounded-full animate-ping"></div>
@@ -66,7 +66,7 @@
 
         {{-- Stats Grid --}}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            
+
             {{-- Revenue --}}
             <div class="bg-zinc-900 dark:bg-white rounded-[2rem] p-8 shadow-2xl group relative overflow-hidden transition-all duration-500 hover:-translate-y-2">
                 <div class="relative z-10">
@@ -82,7 +82,12 @@
             </div>
 
             {{-- Pending --}}
-            <div class="bg-white dark:bg-[#0a0a0a] border border-zinc-100 dark:border-white/5 rounded-[2rem] p-8 transition-all duration-500 hover:border-amber-500/50 group">
+            <div class="bg-white dark:bg-[#0a0a0a] border border-zinc-100 dark:border-white/5 rounded-[2rem] p-8 transition-all duration-500 hover:border-amber-500/50 group relative">
+                {{-- Notification Badge --}}
+                <div x-show="pendingBookings > 0" class="absolute -top-3 -right-3 w-8 h-8 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center animate-pulse">
+                    <span class="text-white text-[10px] font-black" x-text="pendingBookings"></span>
+                </div>
+
                 <div class="flex justify-between items-start mb-6">
                     <p class="text-zinc-400 text-[9px] font-black uppercase tracking-[0.3em]">Đơn chờ duyệt</p>
                     <div class="text-amber-500 group-hover:animate-pulse"><i class="fa-solid fa-hourglass-half"></i></div>
@@ -112,10 +117,10 @@
                 <div class="flex items-center gap-4">
                     <h3 class="text-4xl font-black text-zinc-900 dark:text-white tracking-tighter" x-text="totalUsers">{{ $totalUsers }}</h3>
                     <div class="flex -space-x-3">
-                        <img class="h-8 w-8 rounded-full border-2 border-white dark:border-[#0a0a0a] object-cover" src="https://i.pravatar.cc/100?img=1" alt=""/>
-                        <img class="h-8 w-8 rounded-full border-2 border-white dark:border-[#0a0a0a] object-cover" src="https://i.pravatar.cc/100?img=2" alt=""/>
+                        <img class="h-8 w-8 rounded-full border-2 border-white dark:border-[#0a0a0a] object-cover" src="https://i.pravatar.cc/100?img=1" alt="" />
+                        <img class="h-8 w-8 rounded-full border-2 border-white dark:border-[#0a0a0a] object-cover" src="https://i.pravatar.cc/100?img=2" alt="" />
                         <div class="h-8 w-8 rounded-full border-2 border-white dark:border-[#0a0a0a] bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-[8px] font-black text-zinc-500">
-                             +<span x-text="totalUsers > 2 ? totalUsers - 2 : 0">0</span>
+                            +<span x-text="totalUsers > 2 ? totalUsers - 2 : 0">0</span>
                         </div>
                     </div>
                 </div>
@@ -125,9 +130,9 @@
 
         {{-- Main Content Grid --}}
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-            
+
             <div class="lg:col-span-2 space-y-8">
-                
+
                 {{-- Chart --}}
                 <div class="bg-white dark:bg-[#0a0a0a] rounded-[2.5rem] p-10 border border-zinc-100 dark:border-white/5 shadow-sm relative group">
                     <div class="flex justify-between items-center mb-10">
@@ -174,13 +179,13 @@
                                     <td class="px-8 py-6 uppercase tracking-widest text-zinc-400">{{ $booking->vehicle->name }}</td>
                                     <td class="px-8 py-6 text-center">
                                         @php
-                                            $statusConfig = [
-                                                'pending' => ['bg' => 'bg-amber-100 dark:bg-amber-500/10', 'text' => 'text-amber-700 dark:text-amber-500', 'label' => 'Waiting'],
-                                                'confirmed' => ['bg' => 'bg-zinc-900 dark:bg-white/10', 'text' => 'text-white dark:text-white', 'label' => 'Elite Access'],
-                                                'completed' => ['bg' => 'bg-zinc-100 dark:bg-white/5', 'text' => 'text-zinc-500', 'label' => 'Finished'],
-                                                'cancelled' => ['bg' => 'bg-rose-100 dark:bg-rose-500/10', 'text' => 'text-rose-700 dark:text-rose-500', 'label' => 'Revoked'],
-                                            ];
-                                            $conf = $statusConfig[$booking->status] ?? $statusConfig['pending'];
+                                        $statusConfig = [
+                                        'pending' => ['bg' => 'bg-amber-100 dark:bg-amber-500/10', 'text' => 'text-amber-700 dark:text-amber-500', 'label' => 'Waiting'],
+                                        'confirmed' => ['bg' => 'bg-zinc-900 dark:bg-white/10', 'text' => 'text-white dark:text-white', 'label' => 'Elite Access'],
+                                        'completed' => ['bg' => 'bg-zinc-100 dark:bg-white/5', 'text' => 'text-zinc-500', 'label' => 'Finished'],
+                                        'cancelled' => ['bg' => 'bg-rose-100 dark:bg-rose-500/10', 'text' => 'text-rose-700 dark:text-rose-500', 'label' => 'Revoked'],
+                                        ];
+                                        $conf = $statusConfig[$booking->status] ?? $statusConfig['pending'];
                                         @endphp
                                         <span class="inline-block px-3 py-1.5 rounded-full text-[8px] font-black uppercase tracking-[0.2em] {{ $conf['bg'] }} {{ $conf['text'] }}">
                                             {{ $conf['label'] }}
@@ -189,18 +194,20 @@
                                     <td class="px-8 py-6 text-center">
                                         <div class="flex justify-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-x-2 group-hover:translate-x-0">
                                             @if($booking->status == 'pending')
-                                                <form action="{{ route('admin.bookings.update', $booking->id) }}" method="POST">
-                                                    @csrf @method('PATCH')
-                                                    <input type="hidden" name="status" value="confirmed">
-                                                    <button class="w-8 h-8 rounded-full bg-amber-500 text-black flex items-center justify-center hover:scale-110 transition-transform"><i class="fa-solid fa-check"></i></button>
-                                                </form>
+                                            <form action="{{ route('admin.bookings.update', $booking->id) }}" method="POST">
+                                                @csrf @method('PATCH')
+                                                <input type="hidden" name="status" value="confirmed">
+                                                <button class="w-8 h-8 rounded-full bg-amber-500 text-black flex items-center justify-center hover:scale-110 transition-transform"><i class="fa-solid fa-check"></i></button>
+                                            </form>
                                             @endif
                                             <a href="{{ route('admin.bookings.show', $booking->id) }}" class="w-8 h-8 rounded-full bg-zinc-100 dark:bg-white/10 text-zinc-600 dark:text-zinc-400 flex items-center justify-center hover:bg-zinc-900 dark:hover:bg-white hover:text-white dark:hover:text-black transition-all"><i class="fa-solid fa-chevron-right text-[10px]"></i></a>
                                         </div>
                                     </td>
                                 </tr>
                                 @empty
-                                <tr><td colspan="4" class="px-8 py-20 text-center text-zinc-400 uppercase tracking-[0.3em] text-[10px]">No luxury orders found.</td></tr>
+                                <tr>
+                                    <td colspan="4" class="px-8 py-20 text-center text-zinc-400 uppercase tracking-[0.3em] text-[10px]">No luxury orders found.</td>
+                                </tr>
                                 @endforelse
                             </tbody>
                         </table>
@@ -208,9 +215,49 @@
                 </div>
             </div>
 
-            
+
             <div class="lg:col-span-1 space-y-6">
-                
+
+                {{-- Search & Export --}}
+                <div class="bg-white dark:bg-[#0a0a0a] rounded-[2.5rem] p-8 border border-zinc-100 dark:border-white/5 shadow-sm">
+                    <h3 class="font-black text-zinc-900 dark:text-white uppercase text-[10px] tracking-[0.4em] mb-6">Tìm kiếm & Xuất</h3>
+
+                    {{-- Search Box --}}
+                    <div class="mb-4">
+                        <input type="text"
+                            x-model="searchQuery"
+                            @input.debounce.500ms="searchBookings()"
+                            placeholder="Tìm khách hàng, xe..."
+                            class="w-full px-4 py-3 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm font-medium focus:ring-2 focus:ring-amber-500 transition-all">
+                    </div>
+
+                    {{-- Filters --}}
+                    <div class="space-y-3 mb-6">
+                        <select x-model="filterStatus" @change="searchBookings()" class="w-full px-4 py-3 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs font-bold uppercase tracking-widest">
+                            <option value="">Tất cả trạng thái</option>
+                            <option value="pending">Pending</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+
+                        <input type="date" x-model="filterStartDate" @change="searchBookings()" class="w-full px-4 py-3 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs font-bold">
+                        <input type="date" x-model="filterEndDate" @change="searchBookings()" class="w-full px-4 py-3 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs font-bold">
+                    </div>
+
+                    {{-- Export Buttons --}}
+                    <div class="space-y-3">
+                        <a :href="getExportUrl('excel')" class="flex items-center justify-between p-4 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-600 hover:text-white rounded-2xl transition-all duration-300 group">
+                            <span class="text-[10px] font-black uppercase tracking-widest">Excel Export</span>
+                            <i class="fa-solid fa-file-excel group-hover:scale-110 transition-transform"></i>
+                        </a>
+                        <a :href="getExportUrl('pdf')" class="flex items-center justify-between p-4 bg-rose-500/10 hover:bg-rose-500 text-rose-600 hover:text-white rounded-2xl transition-all duration-300 group">
+                            <span class="text-[10px] font-black uppercase tracking-widest">PDF Report</span>
+                            <i class="fa-solid fa-file-pdf group-hover:scale-110 transition-transform"></i>
+                        </a>
+                    </div>
+                </div>
+
                 {{-- Quick Actions --}}
                 <div class="bg-zinc-900 dark:bg-white rounded-[2.5rem] p-10 text-white dark:text-black relative overflow-hidden group">
                     <div class="absolute -top-10 -right-10 w-40 h-40 bg-amber-500/20 rounded-full blur-3xl transition-all duration-1000 group-hover:scale-150"></div>
@@ -233,8 +280,8 @@
                     <div class="relative flex items-center justify-center mb-10">
                         <svg class="w-32 h-32 transform -rotate-90">
                             <circle cx="64" cy="64" r="60" stroke="currentColor" stroke-width="4" fill="transparent" class="text-zinc-100 dark:text-zinc-900" />
-                            <circle cx="64" cy="64" r="60" stroke="currentColor" stroke-width="4" fill="transparent" 
-                                stroke-dasharray="377" 
+                            <circle cx="64" cy="64" r="60" stroke="currentColor" stroke-width="4" fill="transparent"
+                                stroke-dasharray="377"
                                 :stroke-dashoffset="377 - (377 * (totalVehicles > 0 ? (availableCars/totalVehicles)*100 : 0) / 100)"
                                 class="text-amber-500 transition-all duration-1000" />
                         </svg>
@@ -258,7 +305,7 @@
                     <p class="text-[10px] text-zinc-400 uppercase tracking-widest mt-1">Quản lý phân quyền và dữ liệu thành viên tinh hoa</p>
                 </div>
             </div>
-            
+
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
@@ -321,28 +368,165 @@
         return {
             loading: false,
             revenue: '{{ number_format($revenue) }}',
-            pendingBookings: {{ $pendingBookings }},
-            totalVehicles: {{ $totalVehicles }},
-            availableCars: {{ $availableCars }},
-            rentedCars: {{ $rentedCars }},
-            totalUsers: {{ $totalUsers }},
+            pendingBookings: {
+                {
+                    $pendingBookings
+                }
+            },
+            totalVehicles: {
+                {
+                    $totalVehicles
+                }
+            },
+            availableCars: {
+                {
+                    $availableCars
+                }
+            },
+            rentedCars: {
+                {
+                    $rentedCars
+                }
+            },
+            totalUsers: {
+                {
+                    $totalUsers
+                }
+            },
             chartInstance: null,
 
             init() {
                 this.initChart();
+                this.loadAnalytics();
                 // Polling every 30 seconds
                 setInterval(() => {
                     this.fetchStats();
                 }, 30000);
             },
 
+            getExportUrl(type) {
+                let url = `/admin/export/${type}?`;
+                if (this.filterStatus) url += `status=${this.filterStatus}&`;
+                if (this.filterStartDate) url += `start_date=${this.filterStartDate}&`;
+                if (this.filterEndDate) url += `end_date=${this.filterEndDate}&`;
+                return url;
+            },
+
+            async searchBookings() {
+                try {
+                    const params = new URLSearchParams({
+                        search: this.searchQuery,
+                        status: this.filterStatus,
+                        start_date: this.filterStartDate,
+                        end_date: this.filterEndDate
+                    });
+
+                    const response = await fetch(`/admin/search/bookings?${params}`);
+                    const data = await response.json();
+                    // Update bookings table here if needed
+                    console.log('Search results:', data);
+                } catch (error) {
+                    console.error('Search failed:', error);
+                }
+            },
+
+            async loadAnalytics() {
+                try {
+                    const response = await fetch('/admin/analytics');
+                    const data = await response.json();
+
+                    this.initTrendChart(data.bookingTrends, data.trendLabels);
+                    this.initTypeChart(data.revenueByType);
+                } catch (error) {
+                    console.error('Analytics load failed:', error);
+                }
+            },
+
+            initTrendChart(trends, labels) {
+                const ctx = document.getElementById('trendChart');
+                if (!ctx) return;
+
+                this.trendChartInstance = new Chart(ctx.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Bookings',
+                            data: trends,
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(255,255,255,0.05)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        }
+                    }
+                });
+            },
+
+            initTypeChart(revenueData) {
+                const ctx = document.getElementById('typeChart');
+                if (!ctx) return;
+
+                this.typeChartInstance = new Chart(ctx.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: revenueData.map(d => d.type),
+                        datasets: [{
+                            data: revenueData.map(d => d.revenue),
+                            backgroundColor: ['#f59e0b', '#3b82f6', '#10b981', '#8b5cf6', '#ec4899']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    color: '#999',
+                                    font: {
+                                        size: 10
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            },
+
             async fetchStats(manual = false) {
                 if (manual) this.loading = true;
-                
+
                 try {
-                    const response = await fetch('{{ route('admin.dashboard.stats') }}', { headers: { 'Accept': 'application/json' } });
+                    const response = await fetch('{{ route('
+                        admin.dashboard.stats ') }}', {
+                            headers: {
+                                'Accept': 'application/json'
+                            }
+                        });
                     const data = await response.json();
-                    
+
                     this.revenue = data.revenue;
                     this.pendingBookings = data.pendingBookings;
                     this.totalVehicles = data.totalVehicles;
@@ -361,8 +545,8 @@
             initChart() {
                 const ctx = document.getElementById('revenueChart').getContext('2d');
                 let gradient = ctx.createLinearGradient(0, 0, 0, 400);
-                gradient.addColorStop(0, 'rgba(245, 158, 11, 0.5)'); 
-                gradient.addColorStop(1, 'rgba(245, 158, 11, 0.0)'); 
+                gradient.addColorStop(0, 'rgba(245, 158, 11, 0.5)');
+                gradient.addColorStop(1, 'rgba(245, 158, 11, 0.0)');
 
                 const initialData = @json($revenueData);
                 const initialLabels = @json($chartLabels);
@@ -372,7 +556,7 @@
                     data: {
                         labels: initialLabels,
                         datasets: [{
-                            data: initialData, 
+                            data: initialData,
                             borderColor: '#f59e0b',
                             backgroundColor: gradient,
                             borderWidth: 4,
@@ -380,22 +564,38 @@
                             pointHoverRadius: 8,
                             pointBackgroundColor: '#fff',
                             fill: true,
-                            tension: 0.4 
+                            tension: 0.4
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
                         scales: {
-                            y: { 
-                                display: true, 
-                                grid: { color: 'rgba(255,255,255,0.05)' },
-                                ticks: { callback: (val) => val / 1000000 + 'M' }
+                            y: {
+                                display: true,
+                                grid: {
+                                    color: 'rgba(255,255,255,0.05)'
+                                },
+                                ticks: {
+                                    callback: (val) => val / 1000000 + 'M'
+                                }
                             },
                             x: {
-                                grid: { display: false },
-                                ticks: { color: '#71717a', font: { size: 10, weight: 'bold' } }
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    color: '#71717a',
+                                    font: {
+                                        size: 10,
+                                        weight: 'bold'
+                                    }
+                                }
                             }
                         },
                         interaction: {
@@ -423,9 +623,19 @@
 
 <style>
     @keyframes pageEntry {
-        from { opacity: 0; transform: translateY(20px); filter: blur(10px); }
-        to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+            filter: blur(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+        }
     }
+
     .animate-page-entry {
         animation: pageEntry 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }

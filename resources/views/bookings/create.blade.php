@@ -8,12 +8,12 @@
 <script src="https://npmcdn.com/flatpickr/dist/l10n/vn.js"></script>
 
 <div class="bg-[#f8f9fa] dark:bg-[#050505] min-h-screen pb-24 transition-colors duration-500 font-sans text-sm relative overflow-hidden">
-    
-    
+
+
     <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-500/10 dark:bg-blue-600/5 rounded-full blur-[120px] pointer-events-none mix-blend-multiply dark:mix-blend-screen"></div>
     <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-yellow-500/10 dark:bg-yellow-600/5 rounded-full blur-[100px] pointer-events-none mix-blend-multiply dark:mix-blend-screen"></div>
 
-    
+
     <div class="bg-white/70 dark:bg-[#121212]/80 backdrop-blur-xl border-b border-gray-200 dark:border-white/5 sticky top-0 z-40 shadow-sm transition-all">
         <div class="container mx-auto px-4 max-w-6xl h-16 flex items-center justify-between">
             <a href="{{ route('vehicles.show', $vehicle->id) }}" class="group flex items-center gap-2 text-gray-500 hover:text-gray-900 dark:hover:text-white transition font-bold text-xs uppercase tracking-wide">
@@ -22,8 +22,8 @@
                 </div>
                 <span class="hidden sm:inline">Quay lại xe</span>
             </a>
-            
-            
+
+
             <div class="flex items-center gap-3">
                 <div class="flex items-center gap-2 opacity-50 grayscale">
                     <span class="w-6 h-6 rounded-full bg-gray-200 dark:bg-white/10 flex items-center justify-center text-[10px] font-bold">1</span>
@@ -43,7 +43,7 @@
         </div>
     </div>
 
-    
+
     @if ($errors->any())
     <div class="container mx-auto px-4 max-w-6xl mt-6 animate-fade-in-down">
         <div class="bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/30 p-4 rounded-2xl flex items-start gap-3">
@@ -54,7 +54,7 @@
                 <h3 class="text-sm font-bold text-red-800 dark:text-red-400">Vui lòng kiểm tra lại:</h3>
                 <ul class="mt-1 list-disc list-inside text-xs text-red-600 dark:text-red-300">
                     @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
+                    <li>{{ $error }}</li>
                     @endforeach
                 </ul>
             </div>
@@ -73,7 +73,7 @@
 
                 {{-- WIZARD MAIN COLUMN --}}
                 <div class="lg:col-span-8 space-y-6">
-                    
+
                     {{-- STEP 1: SCHEDULE --}}
                     <div x-show="step === 1" x-transition.duration.500ms class="space-y-6">
                         <div class="bg-white dark:bg-[#121212] rounded-3xl shadow-sm border border-gray-100 dark:border-white/5 p-6 md:p-8 relative overflow-hidden group hover:border-blue-500/30 dark:hover:border-yellow-500/30 transition-all duration-300">
@@ -190,7 +190,7 @@
 
                             <label class="block">
                                 <span class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase ml-1 mb-1 block">Lời nhắn (Tùy chọn)</span>
-                                <textarea name="note" rows="2" placeholder="Ví dụ: Tôi muốn nhận xe tại sân bay..." 
+                                <textarea name="note" rows="2" placeholder="Ví dụ: Tôi muốn nhận xe tại sân bay..."
                                     class="w-full bg-gray-50 dark:bg-black border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-yellow-500 dark:text-white transition resize-none"></textarea>
                             </label>
                         </div>
@@ -198,7 +198,7 @@
 
                     {{-- NAVIGATION BUTTONS --}}
                     <div class="flex justify-between pt-4">
-                         <button type="button" @click="prevStep" x-show="step > 1" class="px-6 py-3 rounded-xl bg-gray-200 dark:bg-white/10 text-black dark:text-white font-bold text-xs uppercase tracking-wider hover:bg-gray-300 dark:hover:bg-white/20 transition">
+                        <button type="button" @click="prevStep" x-show="step > 1" class="px-6 py-3 rounded-xl bg-gray-200 dark:bg-white/10 text-black dark:text-white font-bold text-xs uppercase tracking-wider hover:bg-gray-300 dark:hover:bg-white/20 transition">
                             <i class="fa-solid fa-arrow-left mr-2"></i> Quay lại
                         </button>
                         <div x-show="step === 1" class="flex-1"></div> {{-- Spacer --}}
@@ -214,8 +214,8 @@
                     <div class="bg-white dark:bg-[#121212] rounded-[2rem] shadow-2xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-white/5 overflow-hidden">
                         {{-- Vehicle Preview --}}
                         <div class="relative h-48 group">
-                            <img src="{{ str_starts_with($vehicle->image, 'http') ? $vehicle->image : asset('storage/' . $vehicle->image) }}" 
-                                 class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                            <img src="{{ $vehicle->image_url }}"
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                             <div class="absolute inset-0 bg-gradient-to-t from-[#121212] via-transparent to-transparent opacity-90"></div>
                             <div class="absolute bottom-4 left-6">
                                 <span class="px-2 py-1 rounded bg-yellow-500 text-black text-[10px] font-black uppercase tracking-wider mb-2 inline-block">
@@ -232,7 +232,7 @@
                                     <span>Giá thuê (<span x-text="days">1</span> ngày)</span>
                                     <span class="font-bold text-gray-900 dark:text-white" x-text="formatMoney(rentTotal)">0đ</span>
                                 </div>
-                                
+
                                 <template x-if="services.driver">
                                     <div class="flex justify-between items-center text-xs animate-fade-in-up">
                                         <span class="text-gray-500 dark:text-gray-400">+ Tài xế riêng</span>
@@ -258,7 +258,7 @@
                                 </span>
                                 <div class="absolute inset-0 bg-gray-800 dark:bg-gray-100 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
                             </button>
-                            
+
                             <div class="mt-4 flex justify-center items-center gap-2 text-[10px] text-gray-400">
                                 <i class="fa-solid fa-shield-halved text-green-500"></i> Thanh toán an toàn & bảo mật
                             </div>
@@ -272,16 +272,28 @@
 </div>
 
 <style>
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    .animate-fade-in-up { animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-fade-in-up {
+        animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
 </style>
 
 <script>
     function bookingWizard() {
         return {
             step: 1,
-            pricePerDay: {{ $vehicle->price }},
-            days: 1,
+            pricePerDay: {{ (int)($vehicle->price ?? 0) }},
             rentTotal: 0,
             totalPrice: 0,
             startDate: null,
@@ -315,7 +327,7 @@
                         this.endPicker.set('minDate', dateStr);
                         this.calculate();
                         if (this.isValidStep()) {
-                           // Optional auto open next
+                            // Optional auto open next
                         }
                     }
                 });
@@ -327,7 +339,7 @@
                         this.calculate();
                     }
                 });
-                
+
                 // Initial Calc
                 this.calculate();
             },
@@ -343,14 +355,14 @@
             calculate() {
                 if (this.startDate && this.endDate && this.endDate > this.startDate) {
                     const diffTime = Math.abs(this.endDate - this.startDate);
-                    this.days = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                    this.days = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
                     if (this.days === 0) this.days = 1;
                 } else {
                     this.days = 1;
                 }
 
                 this.rentTotal = this.days * this.pricePerDay;
-                
+
                 let servicesTotal = 0;
                 if (this.services.driver) servicesTotal += this.serviceCosts.driver * this.days;
                 if (this.services.insurance) servicesTotal += this.serviceCosts.insurance * this.days;
@@ -364,7 +376,10 @@
             },
 
             formatMoney(amount) {
-                return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+                return new Intl.NumberFormat('vi-VN', {
+                    style: 'currency',
+                    currency: 'VND'
+                }).format(amount);
             },
 
             isValidStep() {
@@ -385,11 +400,84 @@
                     this.step--;
                 }
             },
-            
+
             submitForm(e) {
-                 e.target.submit();
+                e.target.submit();
             }
         }
     }
+</script>
+
+{{-- Flatpickr Availability Calendar --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const vehicleId = {
+            {
+                $vehicle - > id
+            }
+        };
+        const startDateInput = document.getElementById('start_date_picker');
+        const endDateInput = document.getElementById('end_date_picker');
+
+        // Fetch booked dates from API
+        fetch(`/api/vehicles/${vehicleId}/availability/booked-dates`)
+            .then(response => response.json())
+            .then(data => {
+                const bookedDates = data.booked_dates || [];
+
+                // Initialize start date picker
+                const startPicker = flatpickr(startDateInput, {
+                    minDate: 'today',
+                    dateFormat: 'Y-m-d H:i',
+                    enableTime: true,
+                    time_24hr: true,
+                    disable: bookedDates.map(range => ({
+                        from: range.start,
+                        to: range.end
+                    })),
+                    onChange: function(selectedDates, dateStr) {
+                        startDateInput.dispatchEvent(new Event('input'));
+                        if (selectedDates[0] && endPicker) {
+                            endPicker.set('minDate', selectedDates[0]);
+                        }
+                    }
+                });
+
+                // Initialize end date picker
+                const endPicker = flatpickr(endDateInput, {
+                    minDate: 'today',
+                    dateFormat: 'Y-m-d H:i',
+                    enableTime: true,
+                    time_24hr: true,
+                    disable: bookedDates.map(range => ({
+                        from: range.start,
+                        to: range.end
+                    })),
+                    onChange: function(selectedDates, dateStr) {
+                        endDateInput.dispatchEvent(new Event('input'));
+                    }
+                });
+
+                // Make pickers accessible globally for Alpine.js click handlers
+                window.openStartDate = () => startPicker.open();
+                window.openEndDate = () => endPicker.open();
+            })
+            .catch(error => {
+                console.error('Error fetching booked dates:', error);
+                // Fallback: initialize basic calendars without disabled dates
+                flatpickr(startDateInput, {
+                    minDate: 'today',
+                    dateFormat: 'Y-m-d H:i',
+                    enableTime: true,
+                    time_24hr: true,
+                });
+                flatpickr(endDateInput, {
+                    minDate: 'today',
+                    dateFormat: 'Y-m-d H:i',
+                    enableTime: true,
+                    time_24hr: true,
+                });
+            });
+    });
 </script>
 @endsection

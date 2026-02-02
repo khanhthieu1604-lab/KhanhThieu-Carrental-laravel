@@ -1,33 +1,40 @@
 <footer class="relative bg-[#050505] text-gray-400 font-sans text-sm border-t border-white/10 overflow-hidden">
-    
-    
-    <div class="absolute inset-0 opacity-[0.03] pointer-events-none" 
-         style="background-image: radial-gradient(#eab308 1px, transparent 1px); background-size: 32px 32px;">
+
+
+    <div class="absolute inset-0 opacity-[0.03] pointer-events-none"
+        style="background-image: radial-gradient(#eab308 1px, transparent 1px); background-size: 32px 32px;">
     </div>
 
-    
+
     <div class="border-b border-white/10 bg-white/5 backdrop-blur-sm relative z-10">
         <div class="container mx-auto px-4 py-12 flex flex-col md:flex-row items-center justify-between gap-6">
             <div class="text-center md:text-left">
-                <h3 class="text-2xl font-black text-white uppercase tracking-wide mb-1">Bạn đã sẵn sàng?</h3>
-                <p class="text-gray-500 text-xs">Đặt xe ngay hôm nay để nhận ưu đãi lên đến 20%.</p>
+                <h3 class="text-2xl font-black text-white uppercase tracking-wide mb-1">Đăng ký nhận tin</h3>
+                <p class="text-gray-500 text-xs">Nhận thông báo về các siêu xe mới và ưu đãi độc quyền.</p>
             </div>
+            <div class="flex-1 max-w-md w-full relative">
+                <input type="email" placeholder="Nhập địa chỉ email của bạn..." class="w-full bg-black/50 border border-white/10 rounded-full px-6 py-3 text-sm text-white focus:ring-1 focus:ring-yellow-500 transition-all placeholder-gray-600">
+                <button class="absolute right-1 top-1 bottom-1 px-6 bg-yellow-500 text-black text-xs font-bold uppercase rounded-full hover:bg-yellow-400 transition-colors">
+                    Đăng Ký
+                </button>
+            </div>
+            <div class="hidden lg:block w-px h-12 bg-white/10 mx-6"></div>
             <div class="flex gap-4">
-                <a href="{{ route('vehicles.index') }}" class="px-8 py-3 bg-yellow-500 hover:bg-yellow-400 text-black font-black uppercase text-xs tracking-widest rounded-full transition-transform hover:scale-105 shadow-[0_0_20px_rgba(234,179,8,0.3)]">
+                <a href="{{ route('vehicles.index') }}" class="px-8 py-3 bg-white text-black font-black uppercase text-xs tracking-widest rounded-full transition-transform hover:scale-105 hover:bg-gray-200">
                     Đặt Xe Ngay
                 </a>
-                <a href="tel:0909123456" class="px-8 py-3 border border-white/20 text-white font-bold uppercase text-xs tracking-widest rounded-full hover:bg-white/10 transition-colors">
+                <a href="tel:0909123456" class="px-8 py-3 border border-yellow-500/50 text-yellow-500 font-bold uppercase text-xs tracking-widest rounded-full hover:bg-yellow-500 hover:text-black transition-colors">
                     Gọi 0909.123.456
                 </a>
             </div>
         </div>
     </div>
 
-    
+
     <div class="container mx-auto px-4 py-16 relative z-10">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-            
-            
+
+
             <div class="space-y-6">
                 <a href="{{ route('home') }}" class="inline-block group">
                     <span class="text-3xl font-black text-white tracking-tighter group-hover:text-yellow-500 transition-colors duration-500">
@@ -46,7 +53,7 @@
                 </div>
             </div>
 
-            
+
             <div>
                 <h4 class="text-white font-bold uppercase text-xs tracking-[0.2em] mb-6 border-l-2 border-yellow-500 pl-3">Khám Phá</h4>
                 <ul class="space-y-4">
@@ -58,7 +65,7 @@
                 </ul>
             </div>
 
-            
+
             <div>
                 <h4 class="text-white font-bold uppercase text-xs tracking-[0.2em] mb-6 border-l-2 border-yellow-500 pl-3">Hỗ Trợ Khách Hàng</h4>
                 <ul class="space-y-4">
@@ -70,7 +77,7 @@
                 </ul>
             </div>
 
-            
+
             <div>
                 <h4 class="text-white font-bold uppercase text-xs tracking-[0.2em] mb-6 border-l-2 border-yellow-500 pl-3">Showroom</h4>
                 <ul class="space-y-5">
@@ -107,7 +114,7 @@
         </div>
     </div>
 
-    
+
     <div class="border-t border-white/10 bg-[#020202] relative z-10">
         <div class="container mx-auto px-4 py-6">
             <div class="flex flex-col md:flex-row justify-between items-center gap-4">

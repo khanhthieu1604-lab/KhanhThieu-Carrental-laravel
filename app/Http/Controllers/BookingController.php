@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreBookingRequest;
 use App\Models\Booking;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
@@ -31,16 +32,8 @@ class BookingController extends Controller
      * Store new booking with automatic price calculation
      * Price = number_of_days * vehicle_daily_price (minimum 1 day)
      */
-    public function store(Request $request)
+    public function store(StoreBookingRequest $request)
     {
-        $request->validate([
-            'vehicle_id' => 'required|exists:vehicles,id',
-            'start_date' => 'required|date|after_or_equal:today',
-            'end_date'   => 'required|date|after:start_date',
-        ], [
-            'start_date.after_or_equal' => 'Ngày nhận xe không được chọn trong quá khứ.',
-            'end_date.after'            => 'Ngày trả xe phải sau ngày nhận xe.',
-        ]);
 
         $vehicle = Vehicle::findOrFail($request->vehicle_id);
 
@@ -125,7 +118,7 @@ class BookingController extends Controller
         $start = Carbon::parse($request->start_date);
         $end   = Carbon::parse($request->end_date);
         $days = $start->diffInDays($end);
-        
+
         if ($days < 1) {
             $days = 1;
         }

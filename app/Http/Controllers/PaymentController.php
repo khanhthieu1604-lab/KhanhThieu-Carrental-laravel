@@ -7,68 +7,78 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use App\Services\PaymentGatewayService;
 
 class PaymentController extends Controller
 {
-    
+    protected PaymentGatewayService $paymentService;
+
+    public function __construct(PaymentGatewayService $paymentService)
+    {
+        $this->paymentService = $paymentService;
+    }
+
     public function create($bookingId)
     {
-        
+
         $booking = Booking::with('vehicle')->findOrFail($bookingId);
 
-        
+
         if ($booking->user_id !== Auth::id()) {
             abort(403, 'Bạn không có quyền truy cập đơn hàng này.');
         }
 
-        
+
         if ($booking->status !== 'pending') {
             return redirect()
                 ->route('bookings.history')
                 ->with('info', 'Đơn hàng này đã được xử lý.');
         }
 
-        return view('payment.create', compact('booking'));
+        return view('payment.create', [
+            'booking' => $booking,
+            'vnpayUrl' => $this->paymentService->createPaymentUrl($booking),
+        ]);
     }
 
-    
+
     public function confirm(Request $request, $bookingId)
     {
-        
+
         $booking = Booking::with(['vehicle', 'user'])->findOrFail($bookingId);
 
-        
+
         if ($booking->user_id !== Auth::id()) {
             abort(403, 'Hành động không được phép.');
         }
 
-        
+
         $booking->update([
             'status' => 'confirmed'
         ]);
 
-        
+
         $booking->vehicle->update([
             'status' => 'rented'
         ]);
 
-        
+
         $adminEmail = 'luongthieu.161004@gmail.com';
 
         try {
-            
+
             $data = [
                 'name'    => $booking->user->name,
                 'email'   => $booking->user->email,
                 'vehicle' => $booking->vehicle->name,
                 'price'   => number_format($booking->total_price),
                 'date'    => \Carbon\Carbon::parse($booking->start_date)
-                                ->format('d/m/Y H:i'),
+                    ->format('d/m/Y H:i'),
                 'id'      => $booking->id,
                 'phone'   => $booking->user->phone ?? 'Chưa cập nhật'
             ];
 
-            
+
             Mail::send([], [], function ($message) use ($adminEmail, $data) {
                 $message->to($adminEmail)
                     ->subject('💰 [Thiuu Rental] Ting ting! Đơn hàng mới #' . $data['id'])
@@ -114,15 +124,14 @@ class PaymentController extends Controller
                         </div>
                     ");
             });
-
         } catch (\Exception $e) {
-            
+
             Log::error(
                 'Lỗi gửi mail: ' . $e->getMessage()
             );
         }
 
-        
+
         return redirect()
             ->route('bookings.history')
             ->with(

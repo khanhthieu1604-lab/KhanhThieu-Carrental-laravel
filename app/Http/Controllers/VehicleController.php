@@ -6,6 +6,7 @@ use App\Models\Vehicle;
 use App\Models\Brand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\UpdateVehicleRequest;
 
 class VehicleController extends Controller
 {
@@ -20,7 +21,11 @@ class VehicleController extends Controller
             ->take(8)
             ->get();
 
-        return view('welcome', compact('vehicles'));
+        $brands = Brand::all();
+
+        $locations = Vehicle::select('location')->whereNotNull('location')->whereRaw("LENGTH(TRIM(location)) > 0")->distinct()->get()->pluck('location');
+
+        return view('welcome', compact('vehicles', 'brands', 'locations'));
     }
 
     /**
@@ -57,7 +62,10 @@ class VehicleController extends Controller
             return view('vehicles._grid', compact('vehicles'));
         }
 
-        return view('vehicles.index', compact('vehicles'));
+        $brands = Brand::all();
+        $locations = Vehicle::select('location')->whereNotNull('location')->whereRaw("LENGTH(TRIM(location)) > 0")->distinct()->get()->pluck('location');
+
+        return view('vehicles.index', compact('vehicles', 'brands', 'locations'));
     }
 
     public function show($id)
@@ -66,7 +74,7 @@ class VehicleController extends Controller
         return view('vehicles.show', compact('vehicle'));
     }
 
-    
+
 
     public function adminIndex()
     {
@@ -111,13 +119,8 @@ class VehicleController extends Controller
         return view('admin.vehicles.edit', compact('vehicle', 'brands'));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateVehicleRequest $request, $id)
     {
-        $request->validate([
-            'name'  => 'required',
-            'price' => 'required|numeric',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
-        ]);
 
         $vehicle = Vehicle::findOrFail($id);
         $data    = $request->all();
@@ -153,7 +156,7 @@ class VehicleController extends Controller
     public function updateMaintenance(Request $request, $id)
     {
         $vehicle = Vehicle::findOrFail($id);
-        
+
         if ($vehicle->status == 'rented') {
             return back()->with('error', 'Xe đang được thuê, không thể bảo trì!');
         }
@@ -198,6 +201,7 @@ class VehicleController extends Controller
                 'price'       => rand(2000, 20000) * 1000,
                 'status'      => 'available',
                 'image'       => $luxuryImages[array_rand($luxuryImages)],
+                'location'    => ['Hồ Chí Minh', 'Hà Nội', 'Đà Nẵng', 'Nha Trang', 'Phú Quốc'][rand(0, 4)],
                 'description' => 'Trải nghiệm đỉnh cao với động cơ V8 Twin-Turbo, nội thất da Nappa thủ công.'
             ]);
         }

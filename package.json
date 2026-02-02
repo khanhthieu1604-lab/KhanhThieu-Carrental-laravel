@@ -22,6 +22,7 @@
     },
     "dependencies": {
         "animejs": "^4.2.2",
+        "flatpickr": "^4.6.13",
         "gsap": "^3.12.5",
         "lenis": "^1.0.42",
         "swiper": "^11.0.0"

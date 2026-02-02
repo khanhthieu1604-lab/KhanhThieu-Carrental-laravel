@@ -2,11 +2,11 @@
 FROM node:20 as frontend
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm install
+RUN npm ci
 COPY . .
-RUN npm run dev
+RUN npm run build
 
-# Stage 2: Serve with PHP-FPM
+# Stage 2: PHP-FPM with all dependencies
 FROM php:8.2-fpm
 
 # Install system dependencies
@@ -20,10 +20,16 @@ RUN apt-get update && apt-get install -y \
     libjpeg62-turbo-dev \
     libfreetype6-dev \
     libicu-dev \
+    libwebp-dev \
     curl \
     gnupg \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd intl zip opcache
+    supervisor \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd intl zip opcache \
+    && pecl install redis \
+    && docker-php-ext-enable redis \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -35,12 +41,22 @@ WORKDIR /var/www
 COPY . .
 
 # Copy built assets from frontend stage
-COPY --from=frontend /app/public/build public/build
+COPY --from=frontend /app/public/build /var/www/public/build
 
 # Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # Set permissions
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache \
+    && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
-CMD ["php-fpm"]
+# Copy startup script
+COPY docker/scripts/startup.sh /usr/local/bin/startup.sh
+RUN chmod +x /usr/local/bin/startup.sh
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s \
+    CMD pidof php-fpm || exit 1
+
+# Use startup script as entrypoint
+ENTRYPOINT ["/usr/local/bin/startup.sh"]

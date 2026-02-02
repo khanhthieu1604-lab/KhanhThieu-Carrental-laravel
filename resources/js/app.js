@@ -9,6 +9,10 @@ import Lenis from 'lenis';
 import Swiper from 'swiper/bundle';
 import 'swiper/css/bundle';
 
+// Flatpickr for date picking 
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
+
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
 
@@ -22,5 +26,6 @@ window.Swiper = Swiper;
 window.gsap = gsap;
 window.ScrollTrigger = ScrollTrigger;
 window.Lenis = Lenis;
+window.flatpickr = flatpickr;
 
 Alpine.start();
