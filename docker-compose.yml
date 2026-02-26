@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   app:
     build:
@@ -49,7 +47,7 @@ services:
     container_name: thiuu_nginx
     restart: unless-stopped
     ports:
-      - "8080:80"
+      - "8000:80"
     networks:
       - thiuu
     depends_on:

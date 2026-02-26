@@ -9,23 +9,25 @@ class VehicleFactory extends Factory
 {
     public function definition()
     {
-        
+
         $types = ['Sedan', 'SUV', 'Truck', 'Hatchback', 'Crossover'];
-        
-        
-        $brand = Brand::inRandomOrder()->first(); 
+
+
+        $brand = Brand::inRandomOrder()->first();
         if (!$brand) {
-            $brand = Brand::factory()->create(); 
+            $brand = Brand::factory()->create();
         }
 
+        $modelNames = ['Elite', 'Premium', 'Luxury', 'Sport', 'Executive', 'Classic', 'Modern', 'Deluxe'];
+
         return [
-            'name' => $brand->name . ' ' . $this->faker->word . ' ' . $this->faker->year, 
+            'name' => $brand->name . ' ' . $this->faker->randomElement($modelNames) . ' ' . $this->faker->year,
             'brand_id' => $brand->id,
             'type' => $this->faker->randomElement($types),
-            'price' => $this->faker->numberBetween(500, 5000) * 1000, 
-            'image' => 'https://placehold.co/600x400?text=Car+' . $this->faker->randomNumber(2), 
-            'status' => 'available', 
-            'description' => $this->faker->paragraph(2), 
+            'price' => $this->faker->numberBetween(500, 5000) * 1000,
+            'image' => 'https://placehold.co/600x400?text=Car+' . $this->faker->randomNumber(2),
+            'status' => 'available',
+            'description' => $this->faker->paragraph(2),
             'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
         ];
     }

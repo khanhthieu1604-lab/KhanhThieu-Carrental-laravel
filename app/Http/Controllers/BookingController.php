@@ -7,6 +7,9 @@ use App\Models\Booking;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
+use App\Mail\BookingConfirmationMail;
 use Carbon\Carbon;
 
 /**
@@ -56,6 +59,13 @@ class BookingController extends Controller
             'status'      => 'pending',
             'note'        => $request->note,
         ]);
+
+        // Send booking confirmation email
+        try {
+            Mail::to(Auth::user()->email)->send(new BookingConfirmationMail($booking->load('vehicle.brand', 'user')));
+        } catch (\Exception $e) {
+            \Log::error('Failed to send booking confirmation email: ' . $e->getMessage());
+        }
 
         return redirect()->route(
             'payment.create',

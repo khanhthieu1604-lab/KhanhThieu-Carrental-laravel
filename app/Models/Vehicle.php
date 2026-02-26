@@ -106,6 +106,22 @@ class Vehicle extends Model
     }
 
     /**
+     * Alias for isAvailable() - used by tests
+     */
+    public function isAvailableForDates(\Carbon\Carbon $startDate, \Carbon\Carbon $endDate): bool
+    {
+        return $this->isAvailable($startDate, $endDate);
+    }
+
+    /**
+     * Calculate number of days between two dates
+     */
+    public function getDaysCount(\Carbon\Carbon $startDate, \Carbon\Carbon $endDate): int
+    {
+        return max(1, $startDate->diffInDays($endDate));
+    }
+
+    /**
      * Get the vehicle's image URL
      * Handles both external URLs and local paths
      */

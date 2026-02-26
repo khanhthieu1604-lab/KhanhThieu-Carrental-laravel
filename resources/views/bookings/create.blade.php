@@ -293,7 +293,11 @@
     function bookingWizard() {
         return {
             step: 1,
-            pricePerDay: {{ (int)($vehicle->price ?? 0) }},
+            pricePerDay: {
+                {
+                    (int)($vehicle - > price ?? 0)
+                }
+            },
             rentTotal: 0,
             totalPrice: 0,
             startDate: null,

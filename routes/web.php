@@ -12,12 +12,20 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\AIChatController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\MaintenanceController;
+use App\Http\Controllers\SsoController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 
 Route::get('/', function () {
     return view('splash');
 })->name('splash');
+
+// SSO Routes - Thiuu Ecosystem
+Route::prefix('sso')->name('sso.')->group(function () {
+    Route::get('/callback', [SsoController::class, 'callback'])->name('callback');
+    Route::get('/to-hotel', [SsoController::class, 'redirectToHotel'])->name('to-hotel')->middleware('auth');
+    Route::get('/portal', [SsoController::class, 'portal'])->name('portal');
+});
 
 Route::get('lang/{locale}', [App\Http\Controllers\LanguageController::class, 'switch'])->name('lang.switch');
 

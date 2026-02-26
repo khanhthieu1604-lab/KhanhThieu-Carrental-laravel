@@ -116,8 +116,21 @@
             document.querySelector('.header-anim').style.transform = 'translateY(0)';
         }
 
+        // AnimeJS for Grid
+        if (window.anime) {
+            anime({
+                targets: '.anime-item',
+                opacity: [0, 1],
+                translateY: [20, 0],
+                delay: anime.stagger(100),
+                easing: 'easeOutQuad',
+                duration: 800
+            });
+        }
+
         // INSTANT SEARCH LOGIC
-        const form = document.querySelector('form[action="{{ route('vehicles.index') }}"]');
+        const form = document.querySelector('form[action="{{ route('
+            vehicles.index ') }}"]');
         const searchInput = form.querySelector('input[name="search"]');
         const selects = form.querySelectorAll('select');
         const gridContainer = document.getElementById('vehicle-grid-container');

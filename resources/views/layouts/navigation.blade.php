@@ -19,7 +19,10 @@ $navClass = 'bg-white/70 dark:bg-[#050505]/70 backdrop-blur-xl border-b border-g
         }
     }
 }"
-    id="main-nav" class="{{ $navClass }} sticky top-0 z-[100] transition-all duration-500">
+    role="navigation"
+    aria-label="Main navigation"
+    id="main-nav"
+    class="{{ $navClass }} sticky top-0 z-[100] transition-all duration-500">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
         <div class="flex justify-between items-center h-20">
 
@@ -49,12 +52,18 @@ $navClass = 'bg-white/70 dark:bg-[#050505]/70 backdrop-blur-xl border-b border-g
 
                     @foreach($links as $link)
                     <a href="{{ route($link['route']) }}"
-                        class="relative px-4 py-2 text-xs font-black uppercase tracking-[0.3em] transition-all duration-500 group
-                               {{ $link['active'] ? 'text-yellow-600 dark:text-yellow-500' : 'text-gray-400 hover:text-gray-900 dark:hover:text-white' }}">
+                        class="relative px-4 py-2 text-xs font-black uppercase tracking-[0.3em] transition-all duration-500 group focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-[#050505] rounded
+                               {{ $link['active'] ? 'text-yellow-600 dark:text-yellow-500' : 'text-gray-400 hover:text-gray-900 dark:hover:text-white' }}"
+                        aria-current="{{ $link['active'] ? 'page' : 'false' }}">
                         {{ $link['label'] }}
-                        <span class="absolute bottom-0 left-4 right-4 h-[1px] bg-yellow-500 origin-left scale-x-0 transition-transform duration-500 group-hover:scale-x-100 {{ $link['active'] ? 'scale-x-100' : '' }}"></span>
+                        <span class="absolute bottom-0 left-4 right-4 h-[1px] bg-yellow-500 origin-left scale-x-0 transition-transform duration-500 group-hover:scale-x-100 {{ $link['active'] ? 'scale-x-100' : '' }}" aria-hidden="true"></span>
                     </a>
                     @endforeach
+                    <a href="http://localhost:8001/hotels"
+                        class="relative px-4 py-2 text-xs font-black uppercase tracking-[0.3em] transition-all duration-500 group text-gray-400 hover:text-gray-900 dark:hover:text-white">
+                        {{ __('Hotels') }}
+                        <span class="absolute bottom-0 left-4 right-4 h-[1px] bg-yellow-500 origin-left scale-x-0 transition-transform duration-500 group-hover:scale-x-100"></span>
+                    </a>
                 </div>
             </div>
 
@@ -215,12 +224,34 @@ $navClass = 'bg-white/70 dark:bg-[#050505]/70 backdrop-blur-xl border-b border-g
                 @endauth
             </div>
 
-            <!-- Mobile Hamburger Button -->
-            <div class="flex items-center lg:hidden">
-                <button @click="open = ! open" class="text-gray-400 hover:text-white transition">
-                    <svg class="h-5 w-5" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 8h16M4 16h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6" />
+            <!-- Mobile Hamburger Button - Phase 4 Enhanced -->
+            <div class="flex items-center gap-4 lg:hidden">
+                {{-- Dark Mode Toggle Mobile --}}
+                <label class="theme-switch" for="theme-toggle-mobile">
+                    <input type="checkbox" id="theme-toggle-mobile" class="theme-switch__checkbox" :checked="darkMode" @change="toggleDark()" />
+                    <div class="theme-switch__container">
+                        <div class="theme-switch__clouds"></div>
+                        <div class="theme-switch__circle-container">
+                            <div class="theme-switch__sun-moon-container">
+                                <div class="theme-switch__moon">
+                                    <div class="theme-switch__spot"></div>
+                                    <div class="theme-switch__spot"></div>
+                                    <div class="theme-switch__spot"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </label>
+
+                <button
+                    @click="open = ! open"
+                    class="min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-900 dark:text-white hover:text-yellow-600 transition-all focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 rounded-lg"
+                    aria-label="Toggle navigation menu"
+                    aria-expanded="false"
+                    :aria-expanded="open.toString()">
+                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
@@ -228,13 +259,68 @@ $navClass = 'bg-white/70 dark:bg-[#050505]/70 backdrop-blur-xl border-b border-g
     </div>
 
 
-    <div x-show="open" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" class="sm:hidden bg-white dark:bg-[#0a0a0a] border-t border-gray-100 dark:border-white/5 shadow-2xl">
-        <div class="px-6 py-8 space-y-6 text-center">
+    {{-- Phase 4: Enhanced Mobile Menu with Accessibility --}}
+    <div
+        x-show="open"
+        x-cloak
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 -translate-y-4"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100 translate-y-0"
+        x-transition:leave-end="opacity-0 -translate-y-4"
+        @keydown.escape.window="open = false"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Mobile navigation menu"
+        class="lg:hidden bg-white dark:bg-[#0a0a0a] border-t border-gray-100 dark:border-white/5 shadow-2xl">
+
+        <div class="px-6 py-8 space-y-2">
             @foreach($links as $link)
-            <a href="{{ route($link['route']) }}" class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-600 dark:text-gray-400 hover:text-yellow-500">
+            <a href="{{ route($link['route']) }}"
+                class="block min-h-[44px] px-4 py-3 text-sm font-black uppercase tracking-wider text-gray-900 dark:text-gray-100 hover:bg-yellow-50 dark:hover:bg-yellow-900/10 hover:text-yellow-600 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2"
+                aria-current="{{ $link['active'] ? 'page' : 'false' }}">
                 {{ $link['label'] }}
             </a>
             @endforeach
+
+            <a href="http://localhost:8001/hotels"
+                class="block min-h-[44px] px-4 py-3 text-sm font-black uppercase tracking-wider text-gray-900 dark:text-gray-100 hover:bg-yellow-50 dark:hover:bg-yellow-900/10 hover:text-yellow-600 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2">
+                {{ __('Hotels') }}
+            </a>
+
+            @auth
+            <div class="border-t border-gray-200 dark:border-white/10 my-4 pt-4">
+                <a href="{{ route('profile.edit') }}"
+                    class="block min-h-[44px] px-4 py-3 text-sm font-black uppercase tracking-wider text-gray-900 dark:text-gray-100 hover:bg-yellow-50 dark:hover:bg-yellow-900/10 hover:text-yellow-600 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2">
+                    {{ __('Dashboard') }}
+                </a>
+                <a href="{{ route('bookings.history') }}"
+                    class="block min-h-[44px] px-4 py-3 text-sm font-black uppercase tracking-wider text-gray-900 dark:text-gray-100 hover:bg-yellow-50 dark:hover:bg-yellow-900/10 hover:text-yellow-600 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2">
+                    {{ __('History') ?? 'Lịch sử' }}
+                </a>
+                @if($isAdmin)
+                <a href="{{ route('admin.dashboard') }}"
+                    class="block min-h-[44px] px-4 py-3 text-sm font-black uppercase tracking-wider text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/10 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2">
+                    Admin
+                </a>
+                @endif
+                <form method="POST" action="{{ route('logout') }}" class="mt-2">
+                    @csrf
+                    <button type="submit"
+                        class="w-full min-h-[44px] px-4 py-3 text-sm font-black uppercase tracking-wider text-left text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                        {{ __('Logout') }}
+                    </button>
+                </form>
+            </div>
+            @else
+            <div class="border-t border-gray-200 dark:border-white/10 my-4 pt-4">
+                <a href="{{ route('login') }}"
+                    class="block min-h-[44px] px-4 py-3 text-sm font-black uppercase tracking-wider text-center bg-yellow-500 text-black hover:bg-yellow-600 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2">
+                    {{ __('Login') }}
+                </a>
+            </div>
+            @endauth
         </div>
     </div>
 </nav>

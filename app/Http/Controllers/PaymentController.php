@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use App\Services\PaymentGatewayService;
+use App\Mail\PaymentReceiptMail;
+use App\Models\Payment;
 
 class PaymentController extends Controller
 {
@@ -127,8 +129,25 @@ class PaymentController extends Controller
         } catch (\Exception $e) {
 
             Log::error(
-                'Lỗi gửi mail: ' . $e->getMessage()
+                'Lỗi gửi mail admin: ' . $e->getMessage()
             );
+        }
+
+        // Send payment receipt email to customer
+        try {
+            // Create payment record first
+            $payment = Payment::create([
+                'booking_id' => $booking->id,
+                'user_id' => $booking->user_id,
+                'amount' => $booking->total_price,
+                'method' => 'bank_transfer',
+                'status' => 'completed',
+                'transaction_id' => 'BT' . time(),
+            ]);
+
+            Mail::to($booking->user->email)->send(new PaymentReceiptMail($payment->load('booking.vehicle', 'user')));
+        } catch (\Exception $e) {
+            Log::error('Failed to send payment receipt email: ' . $e->getMessage());
         }
 
 

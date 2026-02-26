@@ -9,26 +9,35 @@ class TelegramService
 {
     protected $token;
     protected $chatId;
+    protected $baseUrl;
 
+    /**
+     * Initialize Telegram service from environment
+     */
     public function __construct()
     {
-        
-        
-        
-        $this->token = 'ĐIỀN_TOKEN_CUA_BRO_VAO_DAY'; 
-        $this->chatId = 'ĐIỀN_CHAT_ID_CUA_BRO_VAO_DAY';
-    }
+        $this->token = env('TELEGRAM_BOT_TOKEN');
+        $this->chatId = env('TELEGRAM_CHAT_ID');
 
-    public static function sendMessage($message)
-    {
-        $instance = new self();
-        
-        if (empty($instance->token) || empty($instance->chatId)) {
-            Log::warning('Telegram chưa được cấu hình!');
-            return;
+        if (empty($this->token) || empty($this->chatId)) {
+            \Log::warning('TelegramService: Bot token or chat ID not configured. Set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID in .env');
         }
 
-        $url = "https://api.telegram.org/bot{$instance->token}/sendMessage";
+        $this->baseUrl = "https://api.telegram.org/bot{$this->token}";
+    }
+
+    /**
+     * Send notification to configured chat
+     */
+    public static function notify(string $message): bool
+    {
+        $instance = new self();
+
+        if (empty($instance->token) || empty($instance->chatId)) {
+            return false; // Silent fail if not configured
+        }
+
+        $url = "{$instance->baseUrl}/sendMessage";
 
         try {
             Http::post($url, [

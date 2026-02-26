@@ -4,11 +4,11 @@ use Illuminate\Support\Str;
 
 return [
 
-    
+
 
     'default' => env('DB_CONNECTION', 'sqlite'),
 
-    
+
 
     'connections' => [
 
@@ -90,20 +90,36 @@ return [
             'charset' => env('DB_CHARSET', 'utf8'),
             'prefix' => '',
             'prefix_indexes' => true,
-            
-            
+
+
+        ],
+
+        // Shared Auth Database (SSO across ecosystem)
+        'shared_auth' => [
+            'driver' => 'mysql',
+            'host' => env('SHARED_AUTH_DB_HOST', '127.0.0.1'),
+            'port' => env('SHARED_AUTH_DB_PORT', '3308'),
+            'database' => env('SHARED_AUTH_DB_DATABASE', 'thiuu_auth'),
+            'username' => env('SHARED_AUTH_DB_USERNAME', 'thiuu_auth'),
+            'password' => env('SHARED_AUTH_DB_PASSWORD', 'thiuu_secret'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
         ],
 
     ],
 
-    
+
 
     'migrations' => [
         'table' => 'migrations',
         'update_date_on_publish' => true,
     ],
 
-    
+
 
     'redis' => [
 
@@ -111,7 +127,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')).'-database-'),
+            'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')) . '-database-'),
             'persistent' => env('REDIS_PERSISTENT', false),
         ],
 

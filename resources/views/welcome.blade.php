@@ -104,7 +104,7 @@
 
     {{-- SECTION: THE FLEET (Bento Grid Layout thay vì Slide) --}}
     <section class="py-32 px-4 md:px-12 bg-[#050505]">
-        <div class="flex flex-col md:flex-row justify-between items-end mb-16 border-b border-white/10 pb-8">
+        <div class="scroll-reveal flex flex-col md:flex-row justify-between items-end mb-16 border-b border-white/10 pb-8">
             <div>
                 <span class="text-xs font-bold text-gray-500 tracking-widest uppercase block mb-2">The Collection</span>
                 <h2 class="font-display text-4xl md:text-5xl text-white">Royal Fleet</h2>
@@ -177,7 +177,7 @@
                 {{-- Right: Service Cards --}}
                 <div class="md:col-span-8 space-y-8">
                     {{-- Service 1 --}}
-                    <div class="group bg-zinc-900 border border-white/5 p-8 md:p-12 hover:bg-zinc-800 transition-colors duration-500">
+                    <div class="scroll-reveal hover-lift group bg-zinc-900 border border-white/5 p-8 md:p-12 hover:bg-zinc-800 transition-colors duration-500">
                         <i class="fa-solid fa-user-shield text-3xl text-gray-500 mb-6 group-hover:text-white transition-colors"></i>
                         <h3 class="font-display text-2xl text-white mb-3">Vệ sĩ & Tài xế riêng</h3>
                         <p class="text-gray-400 text-sm font-light leading-relaxed">
@@ -186,7 +186,7 @@
                     </div>
 
                     {{-- Service 2 --}}
-                    <div class="group bg-zinc-900 border border-white/5 p-8 md:p-12 hover:bg-zinc-800 transition-colors duration-500">
+                    <div class="scroll-reveal stagger-1 hover-lift group bg-zinc-900 border border-white/5 p-8 md:p-12 hover:bg-zinc-800 transition-colors duration-500">
                         <i class="fa-solid fa-wine-glass text-3xl text-gray-500 mb-6 group-hover:text-white transition-colors"></i>
                         <h3 class="font-display text-2xl text-white mb-3">Tiện ích Thượng lưu</h3>
                         <p class="text-gray-400 text-sm font-light leading-relaxed">
@@ -195,7 +195,7 @@
                     </div>
 
                     {{-- Service 3 --}}
-                    <div class="group bg-zinc-900 border border-white/5 p-8 md:p-12 hover:bg-zinc-800 transition-colors duration-500">
+                    <div class="scroll-reveal stagger-2 hover-lift group bg-zinc-900 border border-white/5 p-8 md:p-12 hover:bg-zinc-800 transition-colors duration-500">
                         <i class="fa-solid fa-plane-up text-3xl text-gray-500 mb-6 group-hover:text-white transition-colors"></i>
                         <h3 class="font-display text-2xl text-white mb-3">Airport VIP Fast-track</h3>
                         <p class="text-gray-400 text-sm font-light leading-relaxed">

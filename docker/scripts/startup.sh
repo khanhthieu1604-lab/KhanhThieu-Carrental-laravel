@@ -11,12 +11,20 @@ fi
 
 echo "Waiting for MySQL to be ready..."
 
-# Wait for MySQL to be ready
-until php artisan db:show &> /dev/null
+# Wait for MySQL to be ready using a more reliable check
+max_tries=30
+counter=0
+until php -r "new PDO('mysql:host=mysql;dbname=laravel', 'laravel', 'password');" &> /dev/null || [ $counter -eq $max_tries ]
 do
-    echo "MySQL is unavailable - sleeping"
+    echo "MySQL is unavailable - sleeping (attempt $counter/$max_tries)"
     sleep 2
+    counter=$((counter + 1))
 done
+
+if [ $counter -eq $max_tries ]; then
+    echo "ERROR: MySQL did not become ready in time!"
+    exit 1
+fi
 
 echo "MySQL is ready!"
 
